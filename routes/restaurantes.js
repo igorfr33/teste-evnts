@@ -7,7 +7,7 @@ const mysql = require ('../mysql').pool;
 router.get('/', (req, res, next) => {
     mysql.getConnection((error, conn) => {
 
-        if (error) {return req.status(500).sen({error: error})}
+        if (error) {return res.status(500).send({error: error})}
 
         conn.query(
             'SELECT * FROM restaurante;',
@@ -42,14 +42,14 @@ router.get('/', (req, res, next) => {
 router.post('/CadastraRestaurante', (req, res, next) => {
     mysql.getConnection((error, conn) => {
 
-        if (error) {return req.status(500).sen({error: error})}
+        if (error) {return res.status(500).send({error: error})}
 
         conn.query(
             'SELECT * FROM restaurante WHERE nome = ? and culinaria = ? and endereco = ? and cidade = ?;',
             [req.body.nome, req.body.culinaria, req.body.endereco, req.body.cidade],
             (error, result, fields) =>{
 
-                if (error) {return req.status(500).sen({error: error})}
+                if (error) {return res.status(500).send({error: error})}
 
                 if (result.length > 0) {
                     return res.status(201).send({mensagem: 'Restaurante já cadastrado'});     
@@ -62,7 +62,7 @@ router.post('/CadastraRestaurante', (req, res, next) => {
                         (error, result, field) => {
                             conn.release();
             
-                            if (error) {return req.status(500).sen({error: error})}
+                            if (error) {return res.status(500).send({error: error})}
             
                             const response = {
                                 mensagem: 'Restaurante inserido com sucesso',
@@ -93,7 +93,7 @@ router.post('/CadastraRestaurante', (req, res, next) => {
 router.post('/filtro', (req, res, next) => {
     mysql.getConnection((error, conn) => {
 
-        if (error) {return req.status(500).sen({error: error})}
+        if (error) {return res.status(500).send({error: error})}
 
         if(req.body.culinaria) {
             conn.query('select *from restaurante where culinaria = ?',
@@ -144,7 +144,7 @@ router.post('/filtro', (req, res, next) => {
             conn.query('SELECT R.NOME, R.CULINARIA, R.ENDERECO, R.CIDADE FROM RESTAURANTE AS R INNER JOIN PRATOS AS P ON R.ID = P.IDRESTAURANTE WHERE P.NOME = ?',
             [req.body.prato],
             (erros, result, fields) => {
-                if (error) {return req.status(500).send({error: error})}
+                if (error) {return res.status(500).send({error: error})}
                 const response = {
                     quantidade : result.length,
                     items: result.map(p => {

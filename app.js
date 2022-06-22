@@ -29,7 +29,7 @@ app.use((req, res, next) => {
 });
 
 app.use('/restaurante', rotaRestaurantes);
-app.use('/item', rotaPratos)
+app.use('/pratos', rotaPratos)
 app.use('/cadastrarestaurante', rotaRestaurantes)
 app.use('/filtro', rotaRestaurantes)
 
