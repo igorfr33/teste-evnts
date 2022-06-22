@@ -4,7 +4,7 @@ const morgan = require('morgan');
 const bodyParser = require('body-parser');
 
 const rotaRestaurantes = require('./routes/restaurantes');
-const  rotaItems = require('./routes/items')
+const  rotaPratos = require('./routes/pratos')
 
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({extended: false}));
@@ -29,7 +29,7 @@ app.use((req, res, next) => {
 });
 
 app.use('/restaurante', rotaRestaurantes);
-app.use('/item', rotaItems)
+app.use('/item', rotaPratos)
 app.use('/cadastrarestaurante', rotaRestaurantes)
 app.use('/filtro', rotaRestaurantes)
 

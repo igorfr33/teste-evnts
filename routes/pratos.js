@@ -14,7 +14,7 @@ router.get('/', (req, res, next) => {
                 if (error) {return req.status(500).sen({error: error})}
                 const response = {
                     quantidade : result.length,
-                    items: result.map(p => {
+                    pratos: result.map(p => {
                         return {
                             nome: p.Nome,
                             preço: p.Preco,
@@ -51,7 +51,7 @@ router.post('/', (req, res, next) => {
 
                 const response = {
                     mensagem: 'Item inserido com sucesso',
-                    itemCadastrado: {
+                    pratoCadastrado: {
                         id: result.Id,
                         nome: req.body.nome,
                         preço: req.body.preco,
@@ -80,10 +80,27 @@ router.get('/:nome', (req, res, next) => {
         conn.query(
             'SELECT * FROM item WHERE nome = ?;',
             [req.params.nome],
-            (erros, resultado, fields) =>{
+            (error, result, fields) =>{
                 if (error) {return req.status(500).sen({error: error})}
 
-                return res.status(200).send({response: resultado})
+                const response = {
+                    quantidade : result.length,
+                    pratos: result.map(p => {
+                        return {
+                            nome: p.Nome,
+                            preço: p.Preco,
+                            descrição: p.Descricao,
+                            request: {
+                                tipo: 'GET',
+                                descrição: 'Retorna Dados de um Prato',
+                                url: 'http://localhost:3000/item/' + p.Nome
+                            }
+
+                        }
+                    })
+                }
+
+                return res.status(200).send(response)
             }
         );
     });

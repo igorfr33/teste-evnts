@@ -95,12 +95,11 @@ router.post('/filtro', (req, res, next) => {
 
         if (error) {return req.status(500).sen({error: error})}
 
-        conn.query(
-            'SELECT * FROM restaurante WHERE culinaria = ? OR cidade = ? INNER JOIN item on restaurant.id = item.idrestaurante',
-            [req.body.culinaria, req.body.cidade],
-            (erros, result, fields) =>{
+        if(req.body.culinaria) {
+            conn.query('select *from restaurante where culinaria = ?',
+            [req.body.culinaria],
+            (erros, result, fields) => {
                 if (error) {return req.status(500).send({error: error})}
-
                 const response = {
                     quantidade : result.length,
                     items: result.map(p => {
@@ -108,14 +107,60 @@ router.post('/filtro', (req, res, next) => {
                             nome: p.Nome,
                             culinária: p.Culinaria,
                             endereco: p.Endereco,
-                            cidade: p.Cidade
+                            cidade: p.cidade
                         }
                     })
                 }
-
                 res.status(201).send(response);
+                conn.release();
             }
-        );
+            )
+            
+        }
+
+        if(req.body.cidade) {
+            conn.query('select *from restaurante where cidade = ?',
+            [req.body.cidade],
+            (erros, result, fields) => {
+                if (error) {return req.status(500).send({error: error})}
+                const response = {
+                    quantidade : result.length,
+                    items: result.map(p => {
+                        return {
+                            nome: p.Nome,
+                            culinária: p.Culinaria,
+                            endereco: p.Endereco,
+                            cidade: p.cidade
+                        }
+                    })
+                }
+                res.status(201).send(response);
+                conn.release();
+            }
+            )
+        }
+
+        if(req.body.prato) {
+            conn.query('SELECT R.NOME, R.CULINARIA, R.ENDERECO, R.CIDADE FROM RESTAURANTE AS R INNER JOIN PRATOS AS P ON R.ID = P.IDRESTAURANTE WHERE P.NOME = ?',
+            [req.body.prato],
+            (erros, result, fields) => {
+                if (error) {return req.status(500).send({error: error})}
+                const response = {
+                    quantidade : result.length,
+                    items: result.map(p => {
+                        return {
+                            nome: p.NOME,
+                            culinária: p.CULINARIA,
+                            endereco: p.ENDERECO,
+                            cidade: p.CIDADE
+                        }
+                    })
+                }
+                res.status(201).send(response);
+                conn.release();
+            }
+            )
+        }
     });
 });
 
